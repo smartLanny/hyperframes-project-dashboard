@@ -1,0 +1,31 @@
+{
+  "name": "hyperframes-project-dashboard",
+  "version": "0.1.0",
+  "description": "A local multi-project dashboard for HyperFrames previews, renders, thumbnails, and project cleanup.",
+  "type": "module",
+  "bin": {
+    "hyperframes-project-dashboard": "./bin/hyperframes-project-dashboard.mjs",
+    "hf-dashboard": "./bin/hyperframes-project-dashboard.mjs"
+  },
+  "scripts": {
+    "start": "node ./bin/hyperframes-project-dashboard.mjs",
+    "check": "node --check ./bin/hyperframes-project-dashboard.mjs"
+  },
+  "keywords": [
+    "hyperframes",
+    "dashboard",
+    "video",
+    "preview",
+    "render"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "bin",
+    "README.md",
+    "LICENSE"
+  ]
+}
