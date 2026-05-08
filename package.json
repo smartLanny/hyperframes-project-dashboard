@@ -18,6 +18,14 @@
     "preview",
     "render"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smartLanny/hyperframes-project-dashboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/smartLanny/hyperframes-project-dashboard/issues"
+  },
+  "homepage": "https://github.com/smartLanny/hyperframes-project-dashboard#readme",
   "author": "",
   "license": "MIT",
   "engines": {
