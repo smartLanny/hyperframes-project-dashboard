@@ -2,7 +2,15 @@
 
 A local dashboard for managing many HyperFrames projects from one browser tab.
 
+简体中文说明: [README.zh-CN.md](README.zh-CN.md)
+
 HyperFrames has a great single-project Studio via `hyperframes preview`, but it does not currently ship a parent-folder project index. This tool fills that gap for local production work: scan a folder of projects, start or stop previews, open renders, generate thumbnails, render videos, and move old projects to Trash.
+
+## Screenshots
+
+![Dashboard overview](docs/screenshots/dashboard.png)
+
+![Render settings](docs/screenshots/render-settings.png)
 
 ## Features
 

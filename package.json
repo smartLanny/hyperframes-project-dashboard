@@ -33,7 +33,9 @@
   },
   "files": [
     "bin",
+    "docs/screenshots",
     "README.md",
+    "README.zh-CN.md",
     "LICENSE"
   ]
 }
