@@ -954,6 +954,24 @@ async function stopProject(id) {
   };
 }
 
+async function stopAllProjects() {
+  const projectDirs = await projectDirsForRoot(rootDir);
+  const projectDirSet = new Set(projectDirs.map((projectDir) => path.resolve(projectDir)));
+  const activeServers = (await activePreviewServers())
+    .filter((server) => projectDirSet.has(path.resolve(server.dir)));
+  const stopped = [];
+
+  for (const server of activeServers) {
+    stopped.push(await stopServer(server));
+  }
+
+  return {
+    status: stopped.length ? "stopped" : "not-running",
+    stopped,
+    count: stopped.length,
+  };
+}
+
 async function deletedRecords() {
   const records = await readJsonFile(deletedPath, []);
   return Array.isArray(records) ? records : [];
@@ -1250,7 +1268,7 @@ function html(res) {
 
     .tools {
       display: grid;
-      grid-template-columns: minmax(220px, 320px) minmax(160px, 200px) auto auto auto auto auto;
+      grid-template-columns: minmax(220px, 320px) minmax(160px, 200px) auto auto auto auto auto auto;
       gap: 10px;
       align-items: center;
     }
@@ -1681,6 +1699,7 @@ function html(res) {
           <option value="name">Name A-Z</option>
         </select>
         <button id="activeOnly" type="button" aria-pressed="false">Active only</button>
+        <button id="stopAll" class="danger" type="button" disabled>Stop all</button>
         <button id="viewMode" type="button" aria-pressed="false">List view</button>
         <button id="renderSettingsButton" type="button">Render Settings</button>
         <button id="chooseRoot" type="button">Choose Folder</button>
@@ -1778,6 +1797,7 @@ function html(res) {
       renderJobs: [],
       selected: new Set(),
       busy: new Map(),
+      stopAllBusy: false,
     };
     const grid = document.querySelector("#grid");
     const root = document.querySelector("#root");
@@ -1788,6 +1808,7 @@ function html(res) {
     const search = document.querySelector("#search");
     const sort = document.querySelector("#sort");
     const activeOnly = document.querySelector("#activeOnly");
+    const stopAll = document.querySelector("#stopAll");
     const viewMode = document.querySelector("#viewMode");
     const renderSettingsButton = document.querySelector("#renderSettingsButton");
     const renderSettingsModal = document.querySelector("#renderSettingsModal");
@@ -1988,6 +2009,8 @@ function html(res) {
       const visible = visibleProjects();
 
       const activeCount = state.projects.filter((project) => project.activeServers.length > 0).length;
+      stopAll.disabled = state.stopAllBusy || activeCount === 0;
+      stopAll.textContent = state.stopAllBusy ? "Stopping all..." : "Stop all";
       summary.innerHTML = [
         "<span>" + state.projects.length + " projects</span>",
         "<span>" + activeCount + " active previews</span>",
@@ -2273,6 +2296,31 @@ function html(res) {
       render();
     });
 
+    stopAll.addEventListener("click", async () => {
+      const activeIds = state.projects
+        .filter((project) => project.activeServers.length > 0)
+        .map((project) => project.id);
+      if (!activeIds.length) return;
+
+      state.stopAllBusy = true;
+      for (const id of activeIds) setBusy(id, "stop");
+      render();
+
+      try {
+        const result = await postJson("/api/stop-all", {}, { timeoutMs: 60000 });
+        for (const id of activeIds) markProjectStopped(id);
+        await load();
+        showMessage("Stopped " + result.count + " preview server" + (result.count === 1 ? "." : "s."));
+      } catch (error) {
+        showMessage(error.message, "error");
+        await load().catch(() => {});
+      } finally {
+        state.stopAllBusy = false;
+        for (const id of activeIds) clearBusy(id);
+        render();
+      }
+    });
+
     viewMode.addEventListener("click", () => {
       state.view = state.view === "grid" ? "list" : "grid";
       viewMode.setAttribute("aria-pressed", String(state.view === "list"));
@@ -2491,6 +2539,11 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === "/api/stop" && req.method === "POST") {
       const body = await readJsonBody(req);
       json(res, 200, await stopProject(body.id));
+      return;
+    }
+
+    if (url.pathname === "/api/stop-all" && req.method === "POST") {
+      json(res, 200, await stopAllProjects());
       return;
     }
 

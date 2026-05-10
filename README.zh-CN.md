@@ -27,6 +27,7 @@ HyperFrames 自带的 `hyperframes preview` 很适合单个项目，但当项目
 - 默认按“正在运行优先 + 新到旧”排序。
 - 支持搜索、Active only、网格视图和竖列卡片视图。
 - 每个项目可以直接 Start、Stop、Open Studio、Open Folder、Open Render。
+- 顶部支持一键 Stop all，关闭当前 root 下所有正在运行的 preview。
 - 显示缩略图、项目名、状态、分辨率、时长、composition 数、media 数、最新 render。
 - 支持生成或刷新缩略图。
 - 支持单个删除和多选批量删除。
@@ -47,6 +48,13 @@ HyperFrames 自带的 `hyperframes preview` 很适合单个项目，但当项目
 ```bash
 npm install
 npm start -- --root /path/to/your/HyperFrames/projects
+```
+
+如果你的项目父目录就是 `~/Desktop/Hyperframes`，直接用：
+
+```bash
+cd ~/Desktop/hyperframes-project-dashboard
+npm start -- --root ~/Desktop/Hyperframes
 ```
 
 也可以本地 link 后用短命令：

@@ -19,6 +19,7 @@ HyperFrames has a great single-project Studio via `hyperframes preview`, but it 
 - Search and Active-only filtering.
 - Grid and vertical list card layouts.
 - Start and Stop preview servers using the official `npx hyperframes preview` flow.
+- Stop all running preview servers for the selected root folder in one click.
 - Open Studio, project folder, or latest render.
 - Generate or refresh thumbnails from contact sheets, snapshots, latest render frames, or `hyperframes snapshot`.
 - Render videos directly from a project card.
@@ -43,6 +44,13 @@ Clone the repo, then:
 ```bash
 npm install
 npm start -- --root /path/to/your/HyperFrames/projects
+```
+
+For a local folder at `~/Desktop/Hyperframes`, the command is:
+
+```bash
+cd ~/Desktop/hyperframes-project-dashboard
+npm start -- --root ~/Desktop/Hyperframes
 ```
 
 Or run with the short command after linking locally:
